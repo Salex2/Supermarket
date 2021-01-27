@@ -11,6 +11,9 @@ namespace Supermarket
 {
     public class Bootstrapper : BootstrapperBase
     {
+
+        
+
         public Bootstrapper()
         {
             Initialize();

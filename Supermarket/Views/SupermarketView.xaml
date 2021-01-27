@@ -4,32 +4,38 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Supermarket.Views"
-        mc:Ignorable="d" FontSize="31" Background="White"
-        Title="SupermarketView" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        mc:Ignorable="d" FontSize="30" Background="White"
+        Title="SupermarketView"  Height="550" Width="600" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
+
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-             
+            <RowDefinition/>
+
         </Grid.RowDefinitions>
 
         <!--  Coloana 0 -->
         <TextBlock Text="Products" Grid.Row="0" Grid.Column="0" TextAlignment="Center"/>
         <ListBox x:Name="Products" Grid.Row="1" 
                   Grid.Column="0"
-                  MinHeight="100" MinWidth="160"/>
+                  MinHeight="200" MinWidth="160">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding ProductName}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
         <!--  Coloana 1 -->
         <StackPanel Orientation="Vertical" 
@@ -50,7 +56,18 @@
                    Grid.Column="2"
                    MinHeight="200" MinWidth="160"/>
 
-        <TextBlock x:Name="Total" Text="0Ron"
-                  Grid.Row="2" Grid.Column="2" TextAlignment="Right"/>
+        <StackPanel Orientation="Horizontal"
+                     Grid.Row="2" Grid.Column="2">
+            <TextBlock  Text="Total: " />
+            <TextBlock x:Name="Total" Text="0Ron" TextAlignment="Right"/>
+                  
+        </StackPanel>
+        
+
+        <Button x:Name="Pay"
+                    Content="Pay" Grid.Row="5"  Grid.Column="2" Margin="0 5 "/>
+
+        <Button x:Name="Statistics"
+                    Content="Statistics" Grid.Row="5" Margin="0 5 " Grid.Column="0" Padding="5"/>
     </Grid>
 </Window>
