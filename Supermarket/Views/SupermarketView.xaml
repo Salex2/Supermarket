@@ -29,7 +29,8 @@
         <TextBlock Text="Products" Grid.Row="0" Grid.Column="0" TextAlignment="Center"/>
         <ListBox x:Name="Products" Grid.Row="1" 
                   Grid.Column="0"
-                  MinHeight="200" MinWidth="160">
+                  MinHeight="200" MinWidth="160" SelectedItem="{Binding SelectedProduct}">
+                  
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding ProductName}"/>
@@ -42,7 +43,7 @@
                     Grid.Column="1" 
                     Grid.Row="1" Margin="20 0">
             <TextBlock Text="Quantity" />
-            <TextBox x:Name="Qty" MinWidth="100" 
+            <TextBox x:Name="ProductQty" MinWidth="100" 
                      Margin="0 0 0 10"/>
             <Button x:Name="AddToCart" 
                     Content="Add" Margin="0 0 0 15" Padding="5"/>
@@ -54,7 +55,13 @@
         <TextBlock Text="Cart" Grid.Row="0" Grid.Column="2" TextAlignment="Center"/>
         <ListBox x:Name="ShoppingCart" Grid.Row="1" 
                    Grid.Column="2"
-                   MinHeight="200" MinWidth="160"/>
+                   MinHeight="200" MinWidth="160">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Product.ProductName}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
         <StackPanel Orientation="Horizontal"
                      Grid.Row="2" Grid.Column="2">

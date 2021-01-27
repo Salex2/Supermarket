@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static Supermarket.Views.SupermarketView;
 
 namespace Supermarket.ViewModels
 {
@@ -26,21 +27,33 @@ namespace Supermarket.ViewModels
 
         }
 
-        private BindingList<Product> _products;
+        public BindingList<Product> Products { get; set; }
 
-        public BindingList<Product> Products
+
+        //used for the selection of items in the products ListBox
+        //In the ListBox i write SelectedItem="SelectedProduct"
+        //When i select a product in the ListBox it will put it in my SelectedProduct property;it does it by default
+        private Product _selectedProduct;
+
+        public Product SelectedProduct
         {
-            get { return _products; }
+            get { return _selectedProduct; }
             set
             {
-                _products = value;
+                _selectedProduct = value;
+                NotifyOfPropertyChange(() => SelectedProduct);
+                NotifyOfPropertyChange(() => CanAddToCart); // when you select a product check if canAddToCart has been modified
             }
         }
 
-        //THE CART
-        private BindingList<Product> _cart;
 
-        public BindingList<Product> ShoppingCart
+
+
+
+        //THE CART ; Here I initialize the new List of added products in the Cart
+        private BindingList<ProductsInCart> _cart = new BindingList<ProductsInCart>();
+
+        public BindingList<ProductsInCart> ShoppingCart
         {
             get { return _cart; }
             set
@@ -51,34 +64,49 @@ namespace Supermarket.ViewModels
         }
 
 
-        //Quantity
-        private int _productqty;
+       
 
-        public int Qty
+        private int _productQty;
+
+        public int ProductQty
         {
-            get { return _productqty; }
+            get { return _productQty; }
             set
             {
-                _productqty = value;
-                NotifyOfPropertyChange(() => Qty);
+                _productQty = value;
             }
-
         }
 
 
-        //Make sure something is selected and qty is not 0
+        //Check if a product is selected; 
         public bool CanAddToCart
         {
             get
             {
                 bool output = false;
 
+                //make sure qty is bigger than 0;
+                if (SelectedProduct != null && ProductQty > 0)
+                {
+                    output = true;
+                }
+
                 return output;
             }
         }
 
+
+        //Takes the itesm from the products LIST and the qty; don`t take it away from the products List
+        //Basically i create a new object to add in cart ; recreate the Product ListBox
         public void AddToCart()
         {
+            ProductsInCart product = new ProductsInCart
+            {
+                Product = SelectedProduct,
+                QtyInCart = ProductQty
+            };
+            ShoppingCart.Add(product);
+
 
         }
 

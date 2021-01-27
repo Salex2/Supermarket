@@ -8,5 +8,6 @@ namespace DataAccess
     {
         public string ProductName { get; set; }
         public int Price { get; set; }
+        
     }
 }
