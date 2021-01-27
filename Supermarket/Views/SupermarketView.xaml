@@ -4,27 +4,53 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Supermarket.Views"
-        mc:Ignorable="d" FontSize="31"
+        mc:Ignorable="d" FontSize="31" Background="White"
         Title="SupermarketView" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="20"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="20"/>
+             
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="Products"/>
+        <!--  Coloana 0 -->
+        <TextBlock Text="Products" Grid.Row="0" Grid.Column="0" TextAlignment="Center"/>
+        <ListBox x:Name="Products" Grid.Row="1" 
+                  Grid.Column="0"
+                  MinHeight="100" MinWidth="160"/>
+
+        <!--  Coloana 1 -->
+        <StackPanel Orientation="Vertical" 
+                    Grid.Column="1" 
+                    Grid.Row="1" Margin="20 0">
+            <TextBlock Text="Quantity" />
+            <TextBox x:Name="Qty" MinWidth="100" 
+                     Margin="0 0 0 10"/>
+            <Button x:Name="AddToCart" 
+                    Content="Add" Margin="0 0 0 15" Padding="5"/>
+            <Button x:Name="ClearCart"
+                    Content="Clear Cart" Padding="5"/>
+        </StackPanel>
+
+        <!--  Coloana 2 -->
+        <TextBlock Text="Cart" Grid.Row="0" Grid.Column="2" TextAlignment="Center"/>
+        <ListBox x:Name="ShoppingCart" Grid.Row="1" 
+                   Grid.Column="2"
+                   MinHeight="200" MinWidth="160"/>
+
+        <TextBlock x:Name="Total" Text="0Ron"
+                  Grid.Row="2" Grid.Column="2" TextAlignment="Right"/>
     </Grid>
 </Window>
