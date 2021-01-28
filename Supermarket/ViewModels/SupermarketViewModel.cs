@@ -3,6 +3,8 @@ using DataAccess;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -11,22 +13,22 @@ using static Supermarket.Views.SupermarketView;
 
 namespace Supermarket.ViewModels
 {
-    
+    //Conductor<object>
     //Screen allows for more control over opening and closing; 
     //EXP: If you want to close a form without saving you can get an Event to ask you if you are sure about exiting without saving
-    public class SupermarketViewModel : Conductor<object>
+    public class SupermarketViewModel : Screen
     {
-
-       
+        
 
         public SupermarketViewModel()
         {
+
+           
            Database db = new Database();
-           var productList = db.GetProducts();
-           Products = new BindingList<Product>(productList);
+           Products = new BindingList<Product>(db.GetProducts());
 
         }
-
+        
         public BindingList<Product> Products { get; set; }
 
 
@@ -64,18 +66,9 @@ namespace Supermarket.ViewModels
         }
 
 
-       
 
-        private int _productQty;
-
-        public int ProductQty
-        {
-            get { return _productQty; }
-            set
-            {
-                _productQty = value;
-            }
-        }
+        public int ProductQty { get; set; }
+        
 
 
         //Check if a product is selected; 
@@ -95,7 +88,39 @@ namespace Supermarket.ViewModels
             }
         }
 
+        private int _zipcode;
 
+        public int ZipCode
+        {
+            get { return _zipcode; }
+            set
+            {
+                _zipcode = value;
+
+                //When ZIPCODE value changes notify CanPay 
+                NotifyOfPropertyChange(() => CanPay);
+            }
+        }
+      
+
+        public bool CanPay
+        {
+            get
+            {
+
+                bool output = false;
+
+                if (ShoppingCart.Count() >= 1 && ZipCode > 180)
+                {
+                    output = true;
+                }
+
+                return output;
+            }
+            
+
+
+        }
         //Takes the itesm from the products LIST and the qty; don`t take it away from the products List
         //Basically i create a new object to add in cart ; recreate the Product ListBox
         public void AddToCart()
@@ -107,45 +132,105 @@ namespace Supermarket.ViewModels
             };
             ShoppingCart.Add(product);
 
+            //notify on property change when we add something to cart
+            NotifyOfPropertyChange(() => Total);
+
+            //Notifiy CanPay if we added something in the cart
+            NotifyOfPropertyChange(() => CanPay);
 
         }
 
-        //The total as string 
+        
 
         public string Total
         {
             get
             {
-                //TODO - Replace with calculation
-                return "0Ron";
+                var total = CalculateTotal();
+                
+                return total.ToString() + "Ron";
             }
         }
 
-
-        //check if is something in the cart so user can pay
-        public bool CanPay
+        private decimal CalculateTotal()
         {
-            get
+            decimal total = 0;
+
+            foreach (var item in ShoppingCart)
             {
-                bool output = false;
-                return output;
+                total += item.Product.Price * item.QtyInCart;
+            }
+
+            return total;
+        }
+
+
+        private void SaveCustomerOrder()
+        {
+            string name = ZipCode.ToString();
+            string path = System.IO.Path.Combine(@"d:\Supermarket\Orders", name + ".txt");
+            using (StreamWriter writer = new StreamWriter(path))
+            {
+                writer.WriteLine("Client Zipcode: " + ZipCode);
+                writer.WriteLine("Total amount: " + Total);
+                writer.WriteLine("Date: " + DateTime.Now);
             }
         }
+
+        private void SaveStatistics()
+        {
+
+            using (StreamWriter file = new StreamWriter(@"d:\Supermarket\Statistics\Statistics.txt", true))
+            {
+                file.WriteLine("Client Zipcode: " + ZipCode);
+                file.WriteLine("Total amount: " + Total);
+                file.WriteLine("Date: " + DateTime.Now);
+                file.WriteLine("-------------------");
+                
+            }
+        }
+       
 
         //pay method
         public void Pay()
         {
+            SaveCustomerOrder();
 
+            if (SaveToStatistics)
+            {
+                SaveStatistics();
+            }
+            
+
+            ClearCart();
+            
         }
 
         
-        //empty the cart
+        
         public void ClearCart()
         {
+            ShoppingCart.Clear();
 
+            //when we clear the cart ; clear the price
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanPay);
         }
 
-      
+        public bool SaveToStatistics { get; set; }
+
+
+        //open the statistics txt from shared drive
+        public void Statistics()
+        {
+            var fileToOpen = @"\\DESKTOP-NAGLN77\Statistics\Statistics.txt";
+           
+             Process.Start(fileToOpen);
+        }
+
+        //TO DO : MAKE A REGEX TO TEST THE ZIPCODE
+
+
 
 
 

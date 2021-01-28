@@ -21,15 +21,16 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition/>
 
         </Grid.RowDefinitions>
 
         <!--  Coloana 0 -->
-        <TextBlock Text="Products" Grid.Row="0" Grid.Column="0" TextAlignment="Center"/>
+        <TextBlock Text="Produse" Grid.Row="0" Grid.Column="0" TextAlignment="Center"/>
         <ListBox x:Name="Products" Grid.Row="1" 
                   Grid.Column="0"
-                  MinHeight="200" MinWidth="160" SelectedItem="{Binding SelectedProduct}">
+                  MaxHeight="200" MinWidth="160" SelectedItem="{Binding SelectedProduct}">
                   
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -38,27 +39,43 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
+
+
+        <CheckBox x:Name="SaveToStatistics" Grid.Column="0"
+                  Grid.Row="5" Content="Save to Statistics"
+                  FontSize="24"/>
+
+
+
+        <Button x:Name="Statistics"
+                    Content="Statistici" Grid.Row="6" Margin="0 5 " Grid.Column="0" Padding="5"/>
+        
         <!--  Coloana 1 -->
         <StackPanel Orientation="Vertical" 
                     Grid.Column="1" 
                     Grid.Row="1" Margin="20 0">
-            <TextBlock Text="Quantity" />
+            <TextBlock Text="Cantitate" />
             <TextBox x:Name="ProductQty" MinWidth="100" 
                      Margin="0 0 0 10"/>
             <Button x:Name="AddToCart" 
-                    Content="Add" Margin="0 0 0 15" Padding="5"/>
+                    Content="Adauga" Margin="0 0 0 8" Padding="5"/>
             <Button x:Name="ClearCart"
-                    Content="Clear Cart" Padding="5"/>
+                    Content="Goleste" Padding="3"/>
         </StackPanel>
 
+       
+
         <!--  Coloana 2 -->
-        <TextBlock Text="Cart" Grid.Row="0" Grid.Column="2" TextAlignment="Center"/>
+        <TextBlock Text="Cos" Grid.Row="0" Grid.Column="2" TextAlignment="Center"/>
         <ListBox x:Name="ShoppingCart" Grid.Row="1" 
                    Grid.Column="2"
-                   MinHeight="200" MinWidth="160">
+                   MaxHeight="200" MinWidth="160">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Product.ProductName}"/>
+                     <StackPanel Orientation="Horizontal" >
+                        <TextBlock Text="{Binding Product.ProductName}" Margin="5"/>
+                        <TextBlock Text="{Binding QtyInCart}" Margin="5"/>
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
@@ -66,15 +83,20 @@
         <StackPanel Orientation="Horizontal"
                      Grid.Row="2" Grid.Column="2">
             <TextBlock  Text="Total: " />
-            <TextBlock x:Name="Total" Text="0Ron" TextAlignment="Right"/>
+            <TextBlock x:Name="Total" Text="0Ron" TextAlignment="Left"/>
                   
         </StackPanel>
-        
+        <StackPanel Orientation="Horizontal"
+                     Grid.Row="3" Grid.Column="2">
+            <TextBlock  Text="ZIP: " />
+            <TextBox x:Name="ZipCode"  TextAlignment="Left" MinWidth="100"/>
+            
+        </StackPanel>
 
+       
         <Button x:Name="Pay"
-                    Content="Pay" Grid.Row="5"  Grid.Column="2" Margin="0 5 "/>
+                    Content="Plateste" Grid.Row="5"  Grid.Column="2" Margin="0 5 "/>
 
-        <Button x:Name="Statistics"
-                    Content="Statistics" Grid.Row="5" Margin="0 5 " Grid.Column="0" Padding="5"/>
+        
     </Grid>
 </Window>

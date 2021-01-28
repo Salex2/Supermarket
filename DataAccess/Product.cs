@@ -7,7 +7,7 @@ namespace DataAccess
    public class Product
     {
         public string ProductName { get; set; }
-        public int Price { get; set; }
+        public decimal Price { get; set; }
         
     }
 }

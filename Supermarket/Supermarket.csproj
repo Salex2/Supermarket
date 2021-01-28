@@ -71,6 +71,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Model\ProductsInCart.cs" />
     <Compile Include="ViewModels\SupermarketViewModel.cs" />
     <Compile Include="Views\SupermarketView.xaml.cs">
       <DependentUpon>SupermarketView.xaml</DependentUpon>
@@ -104,9 +105,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Page Include="Views\SupermarketView.xaml">
       <SubType>Designer</SubType>
