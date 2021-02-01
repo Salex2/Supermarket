@@ -42,7 +42,7 @@
 
 
         <CheckBox x:Name="SaveToStatistics" Grid.Column="0"
-                  Grid.Row="5" Content="Save to Statistics"
+                  Grid.Row="5" Content="Salveaza in statistici"
                   FontSize="24"/>
 
 

@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using DataAccess;
+using Supermarket.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using static Supermarket.Views.SupermarketView;
@@ -18,16 +20,17 @@ namespace Supermarket.ViewModels
     //EXP: If you want to close a form without saving you can get an Event to ask you if you are sure about exiting without saving
     public class SupermarketViewModel : Screen
     {
-        
+         
+
 
         public SupermarketViewModel()
         {
-
+            Database db = new Database();
+            Products = new BindingList<Product>(db.GetProducts());
            
-           Database db = new Database();
-           Products = new BindingList<Product>(db.GetProducts());
-
         }
+
+      
         
         public BindingList<Product> Products { get; set; }
 
@@ -43,54 +46,14 @@ namespace Supermarket.ViewModels
             set
             {
                 _selectedProduct = value;
-                NotifyOfPropertyChange(() => SelectedProduct);
                 NotifyOfPropertyChange(() => CanAddToCart); // when you select a product check if canAddToCart has been modified
             }
         }
 
 
+        private string _zipcode="";
 
-
-
-        //THE CART ; Here I initialize the new List of added products in the Cart
-        private BindingList<ProductsInCart> _cart = new BindingList<ProductsInCart>();
-
-        public BindingList<ProductsInCart> ShoppingCart
-        {
-            get { return _cart; }
-            set
-            {
-                _cart = value;
-
-            }
-        }
-
-
-
-        public int ProductQty { get; set; }
-        
-
-
-        //Check if a product is selected; 
-        public bool CanAddToCart
-        {
-            get
-            {
-                bool output = false;
-
-                //make sure qty is bigger than 0;
-                if (SelectedProduct != null && ProductQty > 0)
-                {
-                    output = true;
-                }
-
-                return output;
-            }
-        }
-
-        private int _zipcode;
-
-        public int ZipCode
+        public string ZipCode
         {
             get { return _zipcode; }
             set
@@ -101,8 +64,9 @@ namespace Supermarket.ViewModels
                 NotifyOfPropertyChange(() => CanPay);
             }
         }
-      
 
+        
+        Regex validZipCode = new Regex("^[0-9]{5}$");
         public bool CanPay
         {
             get
@@ -110,22 +74,42 @@ namespace Supermarket.ViewModels
 
                 bool output = false;
 
-                if (ShoppingCart.Count() >= 1 && ZipCode > 180)
+                if (ShoppingCart.Count() >= 1 && validZipCode.IsMatch(ZipCode))
+                {
+                    output = true;
+                }
+
+                return output;
+            }   
+        }
+
+        //THE CART ; Here I initialize the new List of added products in the Cart
+        public BindingList<ProductsInCart> ShoppingCart { get; set; } = new BindingList<ProductsInCart>();
+
+        public int ProductQty { get; set; }
+
+        //Check if a product is selected; 
+        public bool CanAddToCart
+        {  
+            get
+            {
+                bool output = false;
+                
+                //make sure qty is bigger than 0;
+                if (SelectedProduct != null && ProductQty > 0)
                 {
                     output = true;
                 }
 
                 return output;
             }
-            
-
-
         }
+
         //Takes the itesm from the products LIST and the qty; don`t take it away from the products List
         //Basically i create a new object to add in cart ; recreate the Product ListBox
         public void AddToCart()
         {
-            ProductsInCart product = new ProductsInCart
+            var product = new ProductsInCart
             {
                 Product = SelectedProduct,
                 QtyInCart = ProductQty
@@ -154,40 +138,21 @@ namespace Supermarket.ViewModels
 
         private decimal CalculateTotal()
         {
-            decimal total = 0;
-
-            foreach (var item in ShoppingCart)
-            {
-                total += item.Product.Price * item.QtyInCart;
-            }
-
-            return total;
+            return SupermarketServices.CalculateTotal(ShoppingCart);
+         
         }
 
 
         private void SaveCustomerOrder()
         {
-            string name = ZipCode.ToString();
-            string path = System.IO.Path.Combine(@"d:\Supermarket\Orders", name + ".txt");
-            using (StreamWriter writer = new StreamWriter(path))
-            {
-                writer.WriteLine("Client Zipcode: " + ZipCode);
-                writer.WriteLine("Total amount: " + Total);
-                writer.WriteLine("Date: " + DateTime.Now);
-            }
+            SupermarketServices.SaveCustomerOrder(ZipCode, Total);
         }
 
         private void SaveStatistics()
         {
 
-            using (StreamWriter file = new StreamWriter(@"d:\Supermarket\Statistics\Statistics.txt", true))
-            {
-                file.WriteLine("Client Zipcode: " + ZipCode);
-                file.WriteLine("Total amount: " + Total);
-                file.WriteLine("Date: " + DateTime.Now);
-                file.WriteLine("-------------------");
-                
-            }
+            SupermarketServices.SaveStatistics(ZipCode, Total);
+           
         }
        
 
@@ -196,6 +161,7 @@ namespace Supermarket.ViewModels
         {
             SaveCustomerOrder();
 
+            //if is checked save also in statistcs file
             if (SaveToStatistics)
             {
                 SaveStatistics();
@@ -220,17 +186,25 @@ namespace Supermarket.ViewModels
         public bool SaveToStatistics { get; set; }
 
 
-        //open the statistics txt from shared drive
-        public void Statistics()
+        private bool _output = true;
+        public bool CanStatistics
         {
-            var fileToOpen = @"\\DESKTOP-NAGLN77\Statistics\Statistics.txt";
-           
-             Process.Start(fileToOpen);
+            get
+            {
+                return _output;
+            }
         }
 
-        //TO DO : MAKE A REGEX TO TEST THE ZIPCODE
+        
+        //open the statistics txt from shared drive
+        public  void Statistics()
+        {
+            _output = false;
 
-
+            SupermarketServices.Statistics();
+            
+            NotifyOfPropertyChange(() => CanStatistics);
+        }
 
 
 

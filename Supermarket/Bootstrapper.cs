@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Supermarket.Services;
 using Supermarket.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,14 @@ namespace Supermarket
 {
     public class Bootstrapper : BootstrapperBase
     {
-
-        
+     
 
         public Bootstrapper()
         {
             Initialize();
         }
+
+        
 
         //instead of MainWindow.XAML our launch point is SuperMarketViewModel
 
@@ -25,5 +27,9 @@ namespace Supermarket
         {
             DisplayRootViewFor<SupermarketViewModel>();
         }
+
+
+       
+        
     }
 }
